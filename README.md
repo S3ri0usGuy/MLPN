@@ -44,3 +44,4 @@ It lacks a lot of features that I will add in the future or I will abandone the 
 - generall improvements, qol and bug fixes
 - UI
 - some level design
+- in far future there will be sound and some art and maybe VFX
