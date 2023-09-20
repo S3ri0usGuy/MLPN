@@ -1,0 +1,93 @@
+[gd_scene load_steps=14 format=3 uid="uid://bdgj2lpdqe5bm"]
+
+[ext_resource type="Script" path="res://Characters/Enemies/GreenGuy/green_guy.gd" id="1_kv3rh"]
+[ext_resource type="Texture2D" uid="uid://1u7g4y6ovcn0" path="res://Art Assets/Enemies/enemy_test.png" id="1_q0axc"]
+[ext_resource type="Script" path="res://Characters/Enemies/GreenGuy/GreenGuyHurtBox.gd" id="3_k1kix"]
+[ext_resource type="Script" path="res://Characters/Enemies/GreenGuy/GreenGuyMeleeHitBox.gd" id="4_npsoe"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/FacingCollisionShape.gd" id="5_p4bd0"]
+[ext_resource type="Script" path="res://Characters/CharacterStateMachine.gd" id="6_4l8mn"]
+[ext_resource type="Script" path="res://Characters/Enemies/GreenGuy/IdleState.gd" id="7_3ptky"]
+[ext_resource type="Script" path="res://Characters/Enemies/GreenGuy/followState.gd" id="8_7rqha"]
+[ext_resource type="Script" path="res://Characters/Enemies/GreenGuy/GreenGuyHitState.gd" id="8_qt6tf"]
+[ext_resource type="Script" path="res://Characters/Enemies/GreenGuy/Attacking.gd" id="9_gk4d4"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0mmip"]
+radius = 8.0
+height = 28.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nsyi1"]
+radius = 8.0
+height = 28.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7k0bv"]
+size = Vector2(12.25, 5)
+
+[node name="GreenGuy" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "Hit_State")]
+collision_layer = 4
+script = ExtResource("1_kv3rh")
+sprite = NodePath("Sprite2D")
+Hit_State = NodePath("CharacterStateMachine/HitState")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.583)
+texture = ExtResource("1_q0axc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_0mmip")
+
+[node name="HurtBox" type="Area2D" parent="."]
+script = ExtResource("3_k1kix")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
+shape = SubResource("CapsuleShape2D_nsyi1")
+debug_color = Color(0.988235, 0, 0.286275, 0.419608)
+
+[node name="HitBox" type="Area2D" parent="." node_paths=PackedStringArray("Facing_Shape", "character")]
+script = ExtResource("4_npsoe")
+Facing_Shape = NodePath("FacingCollisionShape2D")
+character = NodePath("..")
+
+[node name="FacingCollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+position = Vector2(-15.125, 0)
+shape = SubResource("RectangleShape2D_7k0bv")
+disabled = true
+script = ExtResource("5_p4bd0")
+Facing_Left_Position = Vector2(15, 0)
+Facing_Right_Position = Vector2(-15, 0)
+
+[node name="CharacterStateMachine" type="Node" parent="." node_paths=PackedStringArray("Current_State", "Character")]
+script = ExtResource("6_4l8mn")
+Current_State = NodePath("Idle")
+Character = NodePath("..")
+
+[node name="Idle" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("character", "follow_state")]
+script = ExtResource("7_3ptky")
+character = NodePath("../..")
+follow_state = NodePath("../Follow")
+can_sprint = false
+can_shoot = false
+
+[node name="Follow" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("idle_state", "attacking_state", "character")]
+script = ExtResource("8_7rqha")
+idle_state = NodePath("../Idle")
+attacking_state = NodePath("../Attacking")
+character = NodePath("../..")
+can_sprint = false
+can_shoot = false
+
+[node name="Attacking" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("collision_shape", "following_state")]
+script = ExtResource("9_gk4d4")
+collision_shape = NodePath("../../HitBox/FacingCollisionShape2D")
+following_state = NodePath("../Follow")
+Can_Move = false
+can_sprint = false
+can_shoot = false
+
+[node name="Timer" type="Timer" parent="CharacterStateMachine/Attacking"]
+
+[node name="HitState" type="Node" parent="CharacterStateMachine"]
+script = ExtResource("8_qt6tf")
+can_sprint = false
+can_shoot = false
+
+[connection signal="timeout" from="CharacterStateMachine/Attacking/Timer" to="CharacterStateMachine/Attacking" method="_on_timer_timeout"]

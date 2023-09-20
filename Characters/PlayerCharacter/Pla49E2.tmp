@@ -1,0 +1,57 @@
+[gd_scene load_steps=10 format=3 uid="uid://bmnuriahw3361"]
+
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/Player.gd" id="1_003s3"]
+[ext_resource type="Texture2D" uid="uid://dvadwi1wqq8t6" path="res://Art Assets/Player Character/player_test.png" id="2_53kid"]
+[ext_resource type="Script" path="res://Characters/CharacterStateMachine.gd" id="3_dt34j"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/GroundState.gd" id="4_ie54x"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/AirState.gd" id="5_x0hek"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/LandingState.gd" id="6_j2xfv"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/HeldSpot.gd" id="7_jby6x"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/State_Label.gd" id="7_ykskc"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bbvh2"]
+radius = 8.0
+height = 28.0
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+script = ExtResource("1_003s3")
+push = 20.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -4.76837e-07)
+scale = Vector2(0.5, 0.583333)
+texture = ExtResource("2_53kid")
+
+[node name="PlayerHitbox" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_bbvh2")
+
+[node name="PlayerStateMachine" type="Node" parent="." node_paths=PackedStringArray("Current_State", "Character")]
+script = ExtResource("3_dt34j")
+Current_State = NodePath("GroundState")
+Character = NodePath("..")
+
+[node name="GroundState" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("Air_State")]
+script = ExtResource("4_ie54x")
+Air_State = NodePath("../AirState")
+
+[node name="AirState" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("Landing_State")]
+script = ExtResource("5_x0hek")
+Landing_State = NodePath("../GroundState")
+
+[node name="LandingState" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("Ground_State")]
+script = ExtResource("6_j2xfv")
+Ground_State = NodePath("../GroundState")
+Can_Move = false
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(-15, 0)
+script = ExtResource("7_jby6x")
+
+[node name="Label" type="Label" parent="." node_paths=PackedStringArray("State_Machine")]
+offset_left = -20.0
+offset_top = -37.0
+offset_right = 20.0
+offset_bottom = -14.0
+script = ExtResource("7_ykskc")
+State_Machine = NodePath("../PlayerStateMachine")

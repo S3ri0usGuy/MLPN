@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://hassl6khvjpp"]
+
+[ext_resource type="Script" path="res://Objects/Bullets/9_mm_bullet.gd" id="1_0s0mx"]
+[ext_resource type="Texture2D" uid="uid://jrxd6rnlgci1" path="res://Art Assets/Objects/bullets/9mm bullet.png" id="1_vsgte"]
+[ext_resource type="Script" path="res://Objects/Bullets/9mmBulletHitbox.gd" id="2_vwx1c"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_muln1"]
+size = Vector2(1.5, 1.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lk0ru"]
+size = Vector2(1.5, 1.5)
+
+[node name="NineMmbullet" type="Node2D"]
+script = ExtResource("1_0s0mx")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.09375, 0.09375)
+texture = ExtResource("1_vsgte")
+
+[node name="BulletHitbox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("2_vwx1c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BulletHitbox"]
+shape = SubResource("RectangleShape2D_muln1")
+
+[node name="ImpactDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 15
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ImpactDetector"]
+shape = SubResource("RectangleShape2D_lk0ru")
+debug_color = Color(0.878431, 0.341176, 0, 0.419608)
+
+[node name="Timer" type="Timer" parent="."]

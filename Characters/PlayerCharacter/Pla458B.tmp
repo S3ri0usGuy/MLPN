@@ -1,0 +1,86 @@
+[gd_scene load_steps=19 format=3 uid="uid://bmnuriahw3361"]
+
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/Player.gd" id="1_003s3"]
+[ext_resource type="Texture2D" uid="uid://dvadwi1wqq8t6" path="res://Art Assets/Player Character/player_test.png" id="2_53kid"]
+[ext_resource type="Script" path="res://Characters/CharacterStateMachine.gd" id="3_dt34j"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/GroundState.gd" id="4_ie54x"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/AirState.gd" id="5_x0hek"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/LandingState.gd" id="6_j2xfv"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/MeeleState.gd" id="7_d887i"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/HeldSpot.gd" id="7_jby6x"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/State_Label.gd" id="7_ykskc"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/ShootingState.gd" id="8_pkftl"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/SprintGroundState.gd" id="9_5f1op"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/AimState.gd" id="10_7drf7"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/StaminaLabel.gd" id="12_m3s0y"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/PlayerMeleeHitBox.gd" id="14_yl4o2"]
+[ext_resource type="Script" path="res://Characters/PlayerCharacter/FacingCollisionShape.gd" id="15_c02nk"]
+[ext_resource type="Texture2D" uid="uid://d3bhfm2nodk0b" path="res://Art Assets/Objects/weapons/m9 v1-Sheet.png" id="16_r3fr7"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bbvh2"]
+radius = 8.0
+height = 28.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7dto1"]
+size = Vector2(8, 28)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+script = ExtResource("1_003s3")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -4.76837e-07)
+scale = Vector2(0.5, 0.583333)
+texture = ExtResource("2_53kid")
+
+[node name="PlayerCollisionShape" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_bbvh2")
+
+[node name="PlayerStateMachine" type="Node" parent="." node_paths=PackedStringArray("Current_State", "Character")]
+script = ExtResource("3_dt34j")
+Current_State = NodePath("GroundState")
+Character = NodePath("..")
+
+[node name="GroundState" type="Node" parent="PlayerStateMachine"]
+script = ExtResource("4_ie54x")
+
+[node name="AirState" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("Landing_State")]
+script = ExtResource("5_x0hek")
+Landing_State = NodePath("../GroundState")
+can_sprint = false
+
+[node name="LandingState" type="Node" parent="PlayerStateMachine" node_paths=PackedStringArray("ground_state")]
+script = ExtResource("6_j2xfv")
+ground_state = NodePath("../GroundState")
+Can_Move = false
+
+[node name="Timer" type="Timer" parent="PlayerStateMachine/LandingState"]
+wait_time = 0.5
+autostart = true
+
+[node name="MeeleState" type="Node" parent="PlayerStateMachine"]
+script = ExtResource("7_d887i")
+Can_Move = false
+can_sprint = false
+player = Object(CharacterBody2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(0, 0),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"disable_mode":0,"collision_layer":2,"collision_mask":1,"collision_priority":1.0,"input_pickable":false,"motion_mode":0,"up_direction":Vector2(0, -1),"velocity":Vector2(0, 0),"slide_on_ceiling":true,"max_slides":4,"wall_min_slide_angle":0.261799,"floor_stop_on_slope":true,"floor_constant_speed":false,"floor_block_on_wall":true,"floor_max_angle":0.785398,"floor_snap_length":1.0,"platform_on_leave":0,"platform_floor_layers":4294967295,"platform_wall_layers":0,"safe_margin":0.08,"script":ExtResource("1_003s3"))
+
+collision_shape = Object(CollisionShape2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(13, 0),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"shape":SubResource("RectangleShape2D_7dto1"),"disabled":true,"one_way_collision":false,"one_way_collision_margin":1.0,"debug_color":Color(0, 0.643137, 0.282353, 0.419608),"script":ExtResource("15_c02nk"),"Facing_Left_Position":Vector2(13, 0),"Facing_Right_Position":Vector2(-13, 0))
+
+ground_state = Object(Node,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","script":ExtResource("4_ie54x"),"Jump_Velocity":-150.0,"State_Machine":null,"Air_State":null,"ground_state":null,"Meele_State":null,"Shooting_State":null,"Sprint_State":null,"Aim_State":null,"stamina_regen":0.5,"jump_stamina_consumption":50.0,"Can_Move":true,"can_sprint":true)
+
+
+[node name="Timer" type="Timer" parent="PlayerStateMachine/MeeleState"]
+process_callback = 0
+
+[node name="ShootingState" type="Node" parent="PlayerStateMachine"]
+script = ExtResource("8_pkftl")
+Can_Move = false
+can_sprint = false
+
+[node name="SprintGroundState" type="Node" parent="PlayerStateMachine"]
+script = ExtResource("9_5f1op")
+character = Object(CharacterBody2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(0, 0),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"disable_mode":0,"collision_layer":2,"collision_mask":1,"collision_priority":1.0,"input_pickable":false,"motion_mode":0,"up_direction":Vector2(0, -1),"velocity":Vector2(0, 0),"slide_on_ceiling":true,"max_slides":4,"wall_min_slide_angle":0.261799,"floor_stop_on_slope":true,"floor_constant_speed":false,"floor_block_on_wall":true,"floor_max_angle":0.785398,"floor_snap_length":1.0,"platform_on_leave":0,"platform_floor_layers":4294967295,"platform_wall_layers":0,"safe_margin":0.08,"script":ExtResource("1_003s3"))
+
+ground_state = Object(Node,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","script":ExtResource("4_ie54x"),"Jump_Velocity":-150.0,"State_Machine":null,"Air_State":null,"ground_state":null,"Meele_State":null,"Shooting_State":null,"Sprint_State":null,"Aim_State":null,"stamina_regen":0.5,"jump_stamina_consumption":50.0,"Can_Move":true,"can_sprint":true)
+
+air_state = Object(Node,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","script":ExtResource("5_x0hek"),"Landing_State":Object(Node,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","script":ExtResource("4_ie54x"),"Jump_Velocity":-150.0,"State_Machine":null,"Air_State":null,"ground_state":null,"Meele_State":null,"Shooting_State":null,"Sprint_State":null,"Aim_State":null,"stamina_regen":0.5,"jump_stamin
