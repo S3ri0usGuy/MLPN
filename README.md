@@ -14,14 +14,14 @@ You need to deliver it to the heart of the base.
 
 controls:
 left - A,
-right - D,
-jump - Spacebar,
-sprint - Left Shift,
-pickup/intearct - E,
-reset timer while holding grey box - Q,
-aim - right mouse button,
-fire - left mouse button,
-melee - F.
+ right - D,
+ jump - Spacebar,
+ sprint - Left Shift,
+ pickup/intearct - E,
+ reset timer while holding grey box - Q,
+ aim - right mouse button,
+ fire - left mouse button,
+ melee - F.
 
 # What is in here?
 In here you can find source code of my game.
