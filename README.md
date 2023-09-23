@@ -3,7 +3,8 @@ Reposytory for my game made in godot. it is basic(as basic as can be) prototype 
 * It is a pure prototype so expect to reluanch the game often.
 
 # To play
-- download .zip file named MLPN prototype exe.
+- enter releases tab to your right
+- download .zip file named MLPN prototype.zip.
 - extract it or dont.
 - lunch .exe file.
 
